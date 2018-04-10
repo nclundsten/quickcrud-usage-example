@@ -1,0 +1,92 @@
+<?php
+
+$app->route(
+    '/notes/create',
+    [
+        Crud\Middleware\CrudRouteMiddleware::class,
+        Zend\Expressive\Session\SessionMiddleware::class,
+        Zend\Expressive\Csrf\CsrfMiddleware::class,
+        Crud\Handler\CreateHandler::class,
+    ],
+    ['GET', 'POST'],
+    'notes.create'
+)->setOptions([
+    'entityName' => \Notes\Entity\NoteEntity::class,
+    'routePrefix' => 'notes',
+    'routes' => [
+        'success' => 'notes.list',
+    ],
+    'form' => \Notes\Form\NoteFormFactory::class,
+]);
+
+$app->route(
+    '/notes/{id:\d+}/update',
+    [
+        Crud\Middleware\CrudRouteMiddleware::class,
+        Zend\Expressive\Session\SessionMiddleware::class,
+        Zend\Expressive\Csrf\CsrfMiddleware::class,
+        Crud\Handler\UpdateHandler::class,
+    ],
+    ['GET', 'POST'],
+    'notes.update'
+)->setOptions([
+    'entityName' => \Notes\Entity\NoteEntity::class,
+    'routePrefix' => 'notes',
+    'routes' => [
+        'success' => 'notes.list',
+    ],
+    'identifier' => ['id' => 'id'],
+    'form' => \Notes\Form\NoteFormFactory::class,
+]);
+
+$app->route(
+    '/notes/{id:\d+}/delete',
+    [
+        Crud\Middleware\CrudRouteMiddleware::class,
+        Zend\Expressive\Session\SessionMiddleware::class,
+        Zend\Expressive\Csrf\CsrfMiddleware::class,
+        Crud\Handler\DeleteHandler::class,
+    ],
+    ['GET', 'POST'],
+    'notes.delete'
+)->setOptions([
+    'entityName' => \Notes\Entity\NoteEntity::class,
+    'routePrefix' => 'notes',
+    'routes' => [
+        'success' => 'notes.list',
+    ],
+    'identifier' => ['id' => 'id'],
+    'form' => \Crud\Form\DeleteForm::class,
+]);
+
+$app->route(
+    '/notes',
+    [
+        Crud\Middleware\CrudRouteMiddleware::class,
+        Crud\Handler\ListHandler::class,
+    ],
+    ['GET'],
+    'notes.list'
+)->setOptions([
+    'entityName' => \Notes\Entity\NoteEntity::class,
+    'routes' => [
+        'create' => 'notes.create',
+        'read' => 'notes.read',
+        'update' => 'notes.update',
+        'delete' => 'notes.delete',
+    ],
+    'routePrefix' => 'notes',
+]);
+
+$app->route(
+    '/notes/{id:\d+}/read',
+    [
+        Crud\Middleware\CrudRouteMiddleware::class,
+        Crud\Handler\ReadHandler::class,
+    ],
+    ['GET'],
+    'notes.read'
+)->setOptions([
+    'entityName' => \Notes\Entity\NoteEntity::class,
+    'identifier' => ['id' => 'id'],
+]);
